@@ -26,15 +26,20 @@ const Content = ({ parts }) => {
 };
 
 const Header = ({ name }) => {
-  return <h1>{name}</h1>;
+  return <h2>{name}</h2>;
 };
 
-const Course = ({ course }) => {
+const Course = ({ courses }) => {
   return (
     <>
-      <Header name={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      <h1>Web development curriculum</h1>
+      {courses.map((course, i) => (
+        <div key={course.id}>
+          <Header name={course.name} />
+          <Content parts={course.parts} />
+          <Total parts={course.parts} />
+        </div>
+      ))}
     </>
   );
 };
