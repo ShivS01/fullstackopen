@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import Phonebook from "./components/Phonebook";
-import Numbers from "./components/Numbers";
+
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
