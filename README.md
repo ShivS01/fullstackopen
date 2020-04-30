@@ -1,2 +1,2 @@
 # fullstackopen
-ShivS01
+Course exercise from https://fullstackopen.com/
