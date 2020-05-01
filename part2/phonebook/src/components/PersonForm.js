@@ -4,14 +4,14 @@ const PersonForm = ({ submitNew, inputValue, handleInputState }) => {
   return (
     <form onSubmit={submitNew}>
       <div>
-        name:{" "}
+        name:
         <input
           value={inputValue.newName}
           onChange={handleInputState.changeName}
         />
       </div>
       <div>
-        number:{" "}
+        number:
         <input
           value={inputValue.newNumber}
           onChange={handleInputState.changeNumber}

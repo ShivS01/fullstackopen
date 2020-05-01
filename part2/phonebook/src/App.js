@@ -13,20 +13,13 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
-  const [filtered, setFiltered] = useState(persons);
 
   const changeName = (event) => setNewName(event.target.value);
 
   const changeNumber = (event) => setNewNumber(event.target.value);
 
-  const searchName = (event) => {
-    setSearch(event.target.value);
-    setFiltered(
-      persons.filter((person) =>
-        person.name.toLowerCase().includes(event.target.value)
-      )
-    );
-  };
+  const changeFilter = (event) => setSearch(event.target.value);
+
   const addNew = (event) => {
     event.preventDefault();
     if (persons.find((person) => person.name === newName))
@@ -36,16 +29,19 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-
     setPersons(persons.concat(obj));
     setNewNumber("");
     setNewName("");
   };
 
+  const toShow = persons.filter((person) =>
+    person.name.toLowerCase().includes(search)
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter filterby={search} handleFilter={searchName} />
+      <Filter filterby={search} handleFilter={changeFilter} />
 
       <h3>Add a new</h3>
       <PersonForm
@@ -54,7 +50,7 @@ const App = () => {
         handleInputState={(changeName, changeNumber)}
       />
       <h3>Numbers</h3>
-      <Persons displayList={filtered} />
+      <Persons displayList={toShow} />
     </div>
   );
 };

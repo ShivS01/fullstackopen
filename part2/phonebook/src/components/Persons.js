@@ -1,6 +1,6 @@
 import React from "react";
 
-const Persons = ({ displayList }) => {
+const Persons = ({ displayList, updateFilter }) => {
   return (
     <div>
       {displayList.map((display) => (
