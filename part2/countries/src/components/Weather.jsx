@@ -1,8 +1,6 @@
 import React from "react";
 
 const Weather = ({ capital, wData }) => {
-  if (!wData) return <div>data missing</div>;
-
   if (wData !== 0) {
     const icon = wData.weather_icons;
     // const desc = wData.weather_descriptions;
