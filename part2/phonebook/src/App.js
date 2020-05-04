@@ -11,9 +11,10 @@ const App = () => {
     console.log("useEffect");
     service.getAll().then((fetchedData) => {
       setPersons(fetchedData);
-      console.log(fetchedData);
+      // console.log(fetchedData);
     });
   }, []);
+  // console.log(persons);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
@@ -26,19 +27,53 @@ const App = () => {
 
   const addNew = (event) => {
     event.preventDefault();
-    if (persons.find((person) => person.name === newName))
+    if (
+      persons.find(
+        (person) =>
+          person.name.toLowerCase() === newName.toLowerCase() &&
+          person.number === newNumber
+      )
+    ) {
       return alert(`${newName} is already added to the phonebook`);
+    } else if (
+      persons.find(
+        (person) => person.name.toLowerCase() === newName.toLowerCase()
+      )
+    ) {
+      updatePerson();
+    } else {
+      const obj = {
+        name: newName,
+        number: newNumber,
+      };
 
-    const obj = {
-      name: newName,
-      number: newNumber,
-    };
+      service.create(obj).then((update) => {
+        setPersons(persons.concat(update));
+        setNewName("");
+        setNewNumber("");
+      });
+    }
+  };
 
-    service.create(obj).then((returnedObj) => {
-      setPersons(persons.concat(returnedObj));
-      setNewName("");
-      setNewNumber("");
-    });
+  const updatePerson = () => {
+    const person = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    const toUpdate = { ...person, number: newNumber };
+
+    alert(
+      `${toUpdate.name} is already added to phonebook, replace the old number with a new one?`
+    );
+    service
+      .update(toUpdate.id, toUpdate)
+      .then(() => service.getAll().then((update) => setPersons(update)));
+  };
+
+  const deletePerson = (id, name) => {
+    alert(`delete ${name}?`);
+    service
+      .remove(id)
+      .then(() => service.getAll().then((update) => setPersons(update)));
   };
 
   const toShow = persons.filter((person) =>
@@ -58,7 +93,7 @@ const App = () => {
         handleName={changeName}
       />
       <h3>Numbers</h3>
-      <Persons displayList={toShow} />
+      <Persons displayList={toShow} handleDelete={deletePerson} />
     </div>
   );
 };

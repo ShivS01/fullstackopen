@@ -1,11 +1,16 @@
 import React from "react";
 
-const Persons = ({ displayList, updateFilter }) => {
+const Persons = ({ displayList, handleDelete }) => {
   return (
     <div>
       {displayList.map((display) => (
-        <div key={display.name}>
-          {display.name} {display.number}
+        <div key={display.id}>
+          <span>
+            {display.name} {display.number}
+          </span>
+          <button onClick={() => handleDelete(display.id, display.name)}>
+            delete
+          </button>
         </div>
       ))}
     </div>
