@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import Axios from "axios";
+import service from "./services/Data";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
     console.log("useEffect");
-    Axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-      console.log(response);
+    service.getAll().then((fetchedData) => {
+      setPersons(fetchedData);
+      console.log(fetchedData);
     });
   }, []);
   const [newName, setNewName] = useState("");
@@ -33,9 +33,12 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-    setPersons(persons.concat(obj));
-    setNewNumber("");
-    setNewName("");
+
+    service.create(obj).then((returnedObj) => {
+      setPersons(persons.concat(returnedObj));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const toShow = persons.filter((person) =>
@@ -51,7 +54,8 @@ const App = () => {
       <PersonForm
         submitNew={addNew}
         inputValue={(newName, newNumber)}
-        handleInputState={(changeName, changeNumber)}
+        handleNumber={changeNumber}
+        handleName={changeName}
       />
       <h3>Numbers</h3>
       <Persons displayList={toShow} />
