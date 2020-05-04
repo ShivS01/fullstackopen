@@ -3,6 +3,7 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import service from "./services/Data";
+import Notification from "./services/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -18,6 +19,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [message, setMessage] = useState(null);
+  const [status, setStatus] = useState(null);
 
   const changeName = (event) => setNewName(event.target.value);
 
@@ -51,6 +54,8 @@ const App = () => {
         setPersons(persons.concat(update));
         setNewName("");
         setNewNumber("");
+        setMessage(`Added ${update.name}`);
+        setStatus("green");
       });
     }
   };
@@ -66,23 +71,48 @@ const App = () => {
     );
     service
       .update(toUpdate.id, toUpdate)
-      .then(() => service.getAll().then((update) => setPersons(update)));
+      .then(() =>
+        service.getAll().then((update) => {
+          setPersons(update);
+          setMessage(
+            `${toUpdate.name} has been updated with new number ${toUpdate.number}`
+          );
+          setStatus("green");
+        })
+      )
+      .catch((error) => {
+        setMessage(
+          `Information of ${toUpdate.name} has already been removed from the server`
+        );
+        setStatus("red");
+      });
   };
 
   const deletePerson = (id, name) => {
     alert(`delete ${name}?`);
-    service
-      .remove(id)
-      .then(() => service.getAll().then((update) => setPersons(update)));
+    service.remove(id).then(() =>
+      service.getAll().then((update) => {
+        setPersons(update);
+        setMessage(`${name} has been deleted from the server`);
+        setStatus("red");
+      })
+    );
   };
 
   const toShow = persons.filter((person) =>
     person.name.toLowerCase().includes(search)
   );
 
+  if (message !== null) {
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  }
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={message} status={status} />
       <Filter filterby={search} handleFilter={changeFilter} />
 
       <h3>Add a new</h3>

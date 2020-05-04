@@ -1,0 +1,21 @@
+.green,
+.red {
+  border-radius: 5px;
+  display: flex;
+  font-size: 16px;
+  border-style: solid;
+  padding: 10px;
+  font: bold;
+  margin: 10px;
+}
+.green {
+  border-color: green;
+  color: green;
+  background: lightgreen;
+}
+
+.red {
+  border-color: red;
+  background: lightcoral;
+  color: red;
+}

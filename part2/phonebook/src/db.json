@@ -22,13 +22,8 @@
     },
     {
       "name": "yeet",
-      "number": "SKEET",
-      "id": 6
-    },
-    {
-      "name": "aah,finally this works",
-      "number": "100",
-      "id": 7
+      "number": "skeet",
+      "id": 5
     }
   ]
 }
