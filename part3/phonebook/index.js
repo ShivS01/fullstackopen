@@ -69,3 +69,21 @@ app.delete("/api/persons/:id", (req, res) => {
   persons = persons.filter((person) => person.id !== id);
   res.status(204).end(`person with id = ${id} deleted`);
 });
+
+const generateID = () => {
+  const id = Math.floor(Math.random() * 10000);
+  return id;
+};
+
+app.post("/api/persons", (req, res) => {
+  console.log(`Post called`);
+
+  const person = {
+    name: req.body.name,
+    number: req.body.number,
+    id: generateID(),
+  };
+
+  persons = persons.concat(person);
+  res.json(person);
+});
