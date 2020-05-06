@@ -1,9 +1,3 @@
-const express = require("express");
-
-const app = express();
-
-app.use(express.json());
-
 let persons = [
   {
     name: "Arto Hellas",
@@ -26,6 +20,18 @@ let persons = [
     id: 4,
   },
 ];
+
+const express = require("express");
+const morgan = require("morgan");
+
+const app = express();
+
+morgan.token("data", (req) => JSON.stringify(req.body));
+
+app.use(express.json());
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :data")
+);
 
 const port = 3002;
 
@@ -77,10 +83,18 @@ const generateID = () => {
 
 app.post("/api/persons", (req, res) => {
   console.log(`Post called`);
+  const name = req.body.name;
+  const number = req.body.number;
+
+  if (!name && !number) res.status(400).json({ error: "content missing" });
+  else if (!name) res.status(400).json({ error: "name is missing" });
+  else if (!number) res.status(400).json({ error: "number is missing" });
+  else if (persons.find((person) => person.name === name))
+    return res.status(400).json({ error: "name must be unique" });
 
   const person = {
-    name: req.body.name,
-    number: req.body.number,
+    name,
+    number,
     id: generateID(),
   };
 
