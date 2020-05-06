@@ -47,3 +47,10 @@ app.get("/api/persons", (req, res) => {
   res.json(persons);
   console.log(`persons list called`);
 });
+
+app.get("/info", (req, res) => {
+  const info = `<div>Phonebook has info for ${persons.length} people</div>`;
+  const time = `<div>${new Date()}</div>`;
+  res.end(info + time);
+  console.log(`info called`);
+});
