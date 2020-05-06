@@ -54,3 +54,11 @@ app.get("/info", (req, res) => {
   res.end(info + time);
   console.log(`info called`);
 });
+
+app.get("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const person = persons.find((person) => person.id === id);
+  if (person) res.json(person);
+  else res.status(404).end(`person with id = ${id} not found!!`);
+});
