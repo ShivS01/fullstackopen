@@ -23,8 +23,10 @@ let persons = [
 
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 
 morgan.token("data", (req) => JSON.stringify(req.body));
 
@@ -32,12 +34,6 @@ app.use(express.json());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
-
-const port = 3002;
-
-app.listen(port, () => {
-  console.log(`listening on port ${port}`);
-});
 
 app.get("/", (req, res) => {
   res.end("<h1>Hello Person</h1>");
@@ -100,4 +96,10 @@ app.post("/api/persons", (req, res) => {
 
   persons = persons.concat(person);
   res.json(person);
+});
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
 });
