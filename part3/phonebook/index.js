@@ -21,9 +21,11 @@ let persons = [
   },
 ];
 
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const Person = require("./models/person");
 
 const app = express();
 app.use(cors());
@@ -37,26 +39,9 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
 
-app.get("/", (req, res) => {
-  res.end("<h1>Hello Person</h1>");
-  console.log(`get "/" called`);
-});
-
-app.get("/api", (req, res) => {
-  res.end("<h2>You have arrived at the api page</h2>");
-  console.log(`api called`);
-});
-
 app.get("/api/persons", (req, res) => {
   res.json(persons);
   console.log(`persons list called`);
-});
-
-app.get("/info", (req, res) => {
-  const info = `<div>Phonebook has info for ${persons.length} people</div>`;
-  const time = `<div>${new Date()}</div>`;
-  res.end(info + time);
-  console.log(`info called`);
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -67,40 +52,35 @@ app.get("/api/persons/:id", (req, res) => {
   else res.status(404).end(`person with id = ${id} not found!!`);
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  console.log(`executing HTTP delete`);
-  const id = Number(req.params.id);
-  persons = persons.filter((person) => person.id !== id);
-  res.status(204).end(`person with id = ${id} deleted`);
-});
+// app.delete("/api/persons/:id", (req, res) => {
+//   console.log(`executing HTTP delete`);
+//   const id = Number(req.params.id);
+//   persons = persons.filter((person) => person.id !== id);
+//   res.status(204).end(`person with id = ${id} deleted`);
+// });
 
-const generateID = () => {
-  const id = Math.floor(Math.random() * 10000);
-  return id;
-};
+// app.post("/api/persons", (req, res) => {
+//   console.log(`Post called`);
+//   const name = req.body.name;
+//   const number = req.body.number;
 
-app.post("/api/persons", (req, res) => {
-  console.log(`Post called`);
-  const name = req.body.name;
-  const number = req.body.number;
+//   if (!name && !number) res.status(400).json({ error: "content missing" });
+//   else if (!name) res.status(400).json({ error: "name is missing" });
+//   else if (!number) res.status(400).json({ error: "number is missing" });
+//   else if (persons.find((person) => person.name === name))
+//     return res.status(400).json({ error: "name must be unique" });
 
-  if (!name && !number) res.status(400).json({ error: "content missing" });
-  else if (!name) res.status(400).json({ error: "name is missing" });
-  else if (!number) res.status(400).json({ error: "number is missing" });
-  else if (persons.find((person) => person.name === name))
-    return res.status(400).json({ error: "name must be unique" });
+//   const person = {
+//     name,
+//     number,
+//     id: generateID(),
+//   };
 
-  const person = {
-    name,
-    number,
-    id: generateID(),
-  };
+//   persons = persons.concat(person);
+//   res.json(person);
+// });
 
-  persons = persons.concat(person);
-  res.json(person);
-});
-
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
