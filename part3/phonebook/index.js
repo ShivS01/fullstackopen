@@ -50,20 +50,34 @@ app.get("/api/persons/:id", (req, res) => {
   console.log(`fetching single person details`);
   const id = req.params.id;
 
-  Person.findById(id).then((person) => {
-    res.json(person.toJSON());
-  });
+  Person.findById(id)
+    .then((person) => {
+      res.json(person);
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(400).send({ error: "malformatted id" });
+    });
   // const person = persons.find((person) => person.id === id);
   // if (person) res.json(person);
   // else res.status(404).end(`person with id = ${id} not found!!`);
 });
 
-// app.delete("/api/persons/:id", (req, res) => {
-//   console.log(`executing HTTP delete`);
-//   const id = Number(req.params.id);
-//   persons = persons.filter((person) => person.id !== id);
-//   res.status(204).end(`person with id = ${id} deleted`);
-// });
+app.delete("/api/persons/:id", (req, res) => {
+  console.log(`executing HTTP delete`);
+  const id = req.params.id;
+
+  Person.findByIdAndDelete(id)
+    .then((result) => {
+      res.status(204).end(`person with id = ${id} deleted`);
+    })
+    .catch((error) => console.log(error));
+});
 
 app.post("/api/persons", (req, res) => {
   console.log(`Post called`);
