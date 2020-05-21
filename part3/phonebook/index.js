@@ -48,10 +48,14 @@ app.get("/api/persons", (req, res) => {
 
 app.get("/api/persons/:id", (req, res) => {
   console.log(`fetching single person details`);
-  const id = Number(req.params.id);
-  const person = persons.find((person) => person.id === id);
-  if (person) res.json(person);
-  else res.status(404).end(`person with id = ${id} not found!!`);
+  const id = req.params.id;
+
+  Person.findById(id).then((person) => {
+    res.json(person.toJSON());
+  });
+  // const person = persons.find((person) => person.id === id);
+  // if (person) res.json(person);
+  // else res.status(404).end(`person with id = ${id} not found!!`);
 });
 
 // app.delete("/api/persons/:id", (req, res) => {
@@ -61,26 +65,27 @@ app.get("/api/persons/:id", (req, res) => {
 //   res.status(204).end(`person with id = ${id} deleted`);
 // });
 
-// app.post("/api/persons", (req, res) => {
-//   console.log(`Post called`);
-//   const name = req.body.name;
-//   const number = req.body.number;
+app.post("/api/persons", (req, res) => {
+  console.log(`Post called`);
+  const name = req.body.name;
+  const number = req.body.number;
 
-//   if (!name && !number) res.status(400).json({ error: "content missing" });
-//   else if (!name) res.status(400).json({ error: "name is missing" });
-//   else if (!number) res.status(400).json({ error: "number is missing" });
-//   else if (persons.find((person) => person.name === name))
-//     return res.status(400).json({ error: "name must be unique" });
+  // if (!name && !number) res.status(400).json({ error: "content missing" });
+  // else if (!name) res.status(400).json({ error: "name is missing" });
+  // else if (!number) res.status(400).json({ error: "number is missing" });
+  // else if (persons.find((person) => person.name === name))
+  //   return res.status(400).json({ error: "name must be unique" });
 
-//   const person = {
-//     name,
-//     number,
-//     id: generateID(),
-//   };
+  const person = new Person({
+    name,
+    number,
+  });
 
-//   persons = persons.concat(person);
-//   res.json(person);
-// });
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
+  persons = persons.concat(person);
+});
 
 const PORT = process.env.PORT;
 
