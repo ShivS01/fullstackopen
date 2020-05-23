@@ -9,7 +9,7 @@ const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
-    console.log("useEffect");
+    // console.log("useEffect");
     service.getAll().then((fetchedData) => {
       setPersons(fetchedData);
       // console.log(fetchedData);
@@ -30,21 +30,22 @@ const App = () => {
 
   const addNew = (event) => {
     event.preventDefault();
-    if (
-      persons.find(
-        (person) =>
-          person.name.toLowerCase() === newName.toLowerCase() &&
-          person.number === newNumber
-      )
-    ) {
-      return alert(`${newName} is already added to the phonebook`);
-    } else if (
-      persons.find(
-        (person) => person.name.toLowerCase() === newName.toLowerCase()
-      )
-    ) {
-      updatePerson();
-    } else {
+    // if (
+    //   persons.find(
+    //     (person) =>
+    //       person.name.toLowerCase() === newName.toLowerCase() &&
+    //       person.number === newNumber
+    //   )
+    // ) {
+    //   return alert(`${newName} is already added to the phonebook`);
+    // } else if (
+    //   persons.find(
+    //     (person) => person.name.toLowerCase() === newName.toLowerCase()
+    //   )
+    // ) {
+    //   updatePerson();
+    // } else
+    {
       const obj = {
         name: newName,
         number: newNumber,
@@ -60,33 +61,33 @@ const App = () => {
     }
   };
 
-  const updatePerson = () => {
-    const person = persons.find(
-      (person) => person.name.toLowerCase() === newName.toLowerCase()
-    );
-    const toUpdate = { ...person, number: newNumber };
+  // const updatePerson = () => {
+  //   const person = persons.find(
+  //     (person) => person.name.toLowerCase() === newName.toLowerCase()
+  //   );
+  //   const toUpdate = { ...person, number: newNumber };
 
-    alert(
-      `${toUpdate.name} is already added to phonebook, replace the old number with a new one?`
-    );
-    service
-      .update(toUpdate.id, toUpdate)
-      .then(() =>
-        service.getAll().then((update) => {
-          setPersons(update);
-          setMessage(
-            `${toUpdate.name} has been updated with new number ${toUpdate.number}`
-          );
-          setStatus("green");
-        })
-      )
-      .catch((error) => {
-        setMessage(
-          `Information of ${toUpdate.name} has already been removed from the server`
-        );
-        setStatus("red");
-      });
-  };
+  //   alert(
+  //     `${toUpdate.name} is already added to phonebook, replace the old number with a new one?`
+  //   );
+  //   service
+  //     .update(toUpdate.id, toUpdate)
+  //     .then(() =>
+  //       service.getAll().then((update) => {
+  //         setPersons(update);
+  //         setMessage(
+  //           `${toUpdate.name} has been updated with new number ${toUpdate.number}`
+  //         );
+  //         setStatus("green");
+  //       })
+  //     )
+  //     .catch((error) => {
+  //       setMessage(
+  //         `Information of ${toUpdate.name} has already been removed from the server`
+  //       );
+  //       setStatus("red");
+  //     });
+  // };
 
   const deletePerson = (id, name) => {
     alert(`delete ${name}?`);

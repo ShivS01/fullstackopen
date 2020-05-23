@@ -1,26 +1,3 @@
-// let persons = [
-//   {
-//     name: "Arto Hellas",
-//     number: "040-123456",
-//     id: 1,
-//   },
-//   {
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//     id: 2,
-//   },
-//   {
-//     name: "Dan Abramov",
-//     number: "12-43-234345",
-//     id: 3,
-//   },
-//   {
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//     id: 4,
-//   },
-// ];
-
 require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
@@ -28,13 +5,11 @@ const cors = require("cors");
 const Person = require("./models/person");
 
 const app = express();
+app.use(express.json());
+app.use(express.static("build"));
 app.use(cors());
 
 morgan.token("data", (req) => JSON.stringify(req.body));
-
-app.use(express.json());
-app.use(express.static("build"));
-
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
@@ -59,13 +34,15 @@ app.get("/api/persons/:id", (req, res) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-      response.status(400).send({ error: "malformatted id" });
-    });
+    .catch((error) => next(error));
   // const person = persons.find((person) => person.id === id);
   // if (person) res.json(person);
   // else res.status(404).end(`person with id = ${id} not found!!`);
+});
+
+app.get("/api/", (req, res) => {
+  //HTTP 418: I'm a teapot, lol this funny
+  res.status(418).end();
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -74,7 +51,7 @@ app.delete("/api/persons/:id", (req, res) => {
 
   Person.findByIdAndDelete(id)
     .then((result) => {
-      res.status(204).end(`person with id = ${id} deleted`);
+      res.status(204).end();
     })
     .catch((error) => console.log(error));
 });
@@ -98,7 +75,7 @@ app.post("/api/persons", (req, res) => {
   person.save().then((savedPerson) => {
     res.json(savedPerson);
   });
-  persons = persons.concat(person);
+  // persons = persons.concat(person);
 });
 
 const PORT = process.env.PORT;
@@ -106,3 +83,22 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
