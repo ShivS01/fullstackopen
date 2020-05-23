@@ -21,7 +21,7 @@ app.get("/api/persons", (req, res) => {
   console.log(`persons list called`);
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   console.log(`fetching single person details`);
   const id = req.params.id;
 
@@ -76,6 +76,18 @@ app.post("/api/persons", (req, res) => {
     res.json(savedPerson);
   });
   // persons = persons.concat(person);
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.body.id;
+  const newNumber = {
+    number: req.body.number,
+  };
+  Person.findByIdAndUpdate(id, newNumber, { new: true })
+    .then((updatedPerson) => {
+      res.json(updatedPerson.toJSON());
+    })
+    .catch((error) => next(error));
 });
 
 const PORT = process.env.PORT;

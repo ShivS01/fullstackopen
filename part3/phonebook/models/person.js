@@ -17,6 +17,8 @@ console.log("connecting to", url);
 // };
 // connectDB();
 
+mongoose.set("useFindAndModify", false);
+
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
@@ -28,7 +30,7 @@ mongoose
 
 const personSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  number: String,
 });
 
 personSchema.set("toJSON", {
