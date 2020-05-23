@@ -90,6 +90,16 @@ app.put("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+app.get("/info", (req, res) => {
+  console.log(`info called`);
+  Person.countDocuments({}, (err, count) => {
+    // console.log(count);
+    const info = `<div>Phonebook has info for ${count} people</div>`;
+    const time = `<div>${new Date()}</div>`;
+    res.end(info + time);
+  });
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
